@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -30,9 +31,12 @@ public class SecurityUser implements UserDetails {
     public SecurityUser() {
     }
 
-    public SecurityUser(User user) {
+    public SecurityUser(User user,List<String> permissionValueList) {
         if (user != null) {
             this.currentUserInfo = user;
+        }
+        if (permissionValueList != null && permissionValueList.size() > 0) {
+            this.permissionValueList = permissionValueList;
         }
     }
 
@@ -77,4 +81,9 @@ public class SecurityUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public User getCurrentUserInfo() {
+        return currentUserInfo;
+    }
+
 }

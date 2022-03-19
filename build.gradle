@@ -29,6 +29,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.4.2'
     implementation 'com.baomidou:mybatis-plus-generator:3.4.0'
     implementation 'org.apache.velocity:velocity-engine-core:2.3'
     implementation 'com.alibaba:druid-spring-boot-starter:1.2.4'
@@ -40,6 +41,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.apache.commons:commons-pool2:2.6.0'
+    //解决JWT生成：java.lang.NoClassDefFoundError: javax/xml/bind/DatatypeConverter
+    //JAXB API是java EE 的API，因此在java SE 9.0 中不再包含这个 Jar 包。
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+    implementation 'javax.activation:activation:1.1.1'
 
 }
 

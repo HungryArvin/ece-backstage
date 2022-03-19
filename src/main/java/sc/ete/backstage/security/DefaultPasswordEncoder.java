@@ -9,9 +9,6 @@ import sc.ete.backstage.utils.MD5;
  * <p>
  * t密码的处理方法类型
  * </p>
- *
- * @author qy
- * @since 2019-11-08
  */
 @Component
 public class DefaultPasswordEncoder implements PasswordEncoder {

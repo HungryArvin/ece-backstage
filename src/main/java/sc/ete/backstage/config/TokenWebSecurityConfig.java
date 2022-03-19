@@ -15,7 +15,6 @@ import sc.ete.backstage.filter.TokenAuthenticationFilter;
 import sc.ete.backstage.filter.TokenLoginFilter;
 import sc.ete.backstage.security.DefaultPasswordEncoder;
 import sc.ete.backstage.security.TokenLogoutHandler;
-import sc.ete.backstage.security.TokenManager;
 import sc.ete.backstage.security.UnauthorizedEntryPoint;
 
 /**
@@ -30,16 +29,13 @@ import sc.ete.backstage.security.UnauthorizedEntryPoint;
 public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
-    private TokenManager tokenManager;
     private DefaultPasswordEncoder defaultPasswordEncoder;
     private RedisTemplate redisTemplate;
 
     @Autowired
-    public TokenWebSecurityConfig(UserDetailsService userDetailsService, DefaultPasswordEncoder defaultPasswordEncoder,
-                                  TokenManager tokenManager, RedisTemplate redisTemplate) {
+    public TokenWebSecurityConfig(UserDetailsService userDetailsService, DefaultPasswordEncoder defaultPasswordEncoder, RedisTemplate redisTemplate) {
         this.userDetailsService = userDetailsService;
         this.defaultPasswordEncoder = defaultPasswordEncoder;
-        this.tokenManager = tokenManager;
         this.redisTemplate = redisTemplate;
     }
 
@@ -56,9 +52,9 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().logout().logoutUrl("/backstage/user/logout")
-                .addLogoutHandler(new TokenLogoutHandler(tokenManager,redisTemplate)).and()
-                .addFilter(new TokenLoginFilter(authenticationManager(), tokenManager, redisTemplate))
-                .addFilter(new TokenAuthenticationFilter(authenticationManager(), tokenManager, redisTemplate)).httpBasic();
+                .addLogoutHandler(new TokenLogoutHandler(redisTemplate)).and()
+                .addFilter(new TokenLoginFilter(authenticationManager(), redisTemplate))
+                .addFilter(new TokenAuthenticationFilter(authenticationManager(), redisTemplate)).httpBasic();
     }
 
     /**
@@ -78,10 +74,10 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/api/**",
-//                "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**"
-//               );
-        web.ignoring().antMatchers("/**"
-        );
+        web.ignoring().antMatchers("/api/**",
+                "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**"
+               );
+//        web.ignoring().antMatchers("/**"
+//        );
     }
 }

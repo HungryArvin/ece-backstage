@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.StringUtils;
-import sc.ete.backstage.security.TokenManager;
+import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.R;
 import sc.ete.backstage.utils.ResponseUtil;
 
@@ -29,12 +29,10 @@ import java.util.List;
 
  */
 public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
-    private TokenManager tokenManager;
     private RedisTemplate redisTemplate;
 
-    public TokenAuthenticationFilter(AuthenticationManager authManager, TokenManager tokenManager,RedisTemplate redisTemplate) {
+    public TokenAuthenticationFilter(AuthenticationManager authManager,RedisTemplate redisTemplate) {
         super(authManager);
-        this.tokenManager = tokenManager;
         this.redisTemplate = redisTemplate;
     }
 
@@ -42,10 +40,10 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         logger.info("================="+req.getRequestURI());
-        if(req.getRequestURI().indexOf("admin") == -1) {
-            chain.doFilter(req, res);
-            return;
-        }
+//        if(req.getRequestURI().indexOf("admin") == -1) {
+//            chain.doFilter(req, res);
+//            return;
+//        }
 
         UsernamePasswordAuthenticationToken authentication = null;
         try {
@@ -66,7 +64,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
         // token置于header里
         String token = request.getHeader("X-Token");
         if (token != null && !"".equals(token.trim())) {
-            String userName = tokenManager.getUserFromToken(token);
+            String userName = JwtUtil.getUsernameFromToken(token);
 
             List<String> permissionValueList = (List<String>) redisTemplate.opsForValue().get(userName);
             Collection<GrantedAuthority> authorities = new ArrayList<>();

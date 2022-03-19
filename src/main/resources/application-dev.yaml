@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    username: exe_base
+    username: ece_base
     password: 123456
     url: jdbc:mysql://8.142.101.41:3306/ece_base?useSSL=false&serverTimezone=GMT%2B8
     #    druid 线程池配置
@@ -72,7 +72,7 @@ spring:
 #      #客户端配置
 
 #mybatis-plus配置
-mybatis:
+mybatis-plus:
 #  global-config:
 #    db-config:
 #     logic-delete-field: flag  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
