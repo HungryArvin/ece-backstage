@@ -1,8 +1,8 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.CourseTeacher;
-import com.baomidou.backstage.mapper.CourseTeacherMapper;
-import com.baomidou.backstage.service.CourseTeacherService;
+import sc.ete.backstage.entity.CourseTeacher;
+import sc.ete.backstage.mapper.CourseTeacherMapper;
+import sc.ete.backstage.service.CourseTeacherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

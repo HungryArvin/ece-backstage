@@ -1,8 +1,8 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.Department;
-import com.baomidou.backstage.mapper.DepartmentMapper;
-import com.baomidou.backstage.service.DepartmentService;
+import sc.ete.backstage.entity.Department;
+import sc.ete.backstage.mapper.DepartmentMapper;
+import sc.ete.backstage.service.DepartmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

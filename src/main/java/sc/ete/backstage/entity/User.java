@@ -1,4 +1,4 @@
-package com.baomidou.backstage.entity;
+package sc.ete.backstage.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
@@ -29,13 +29,15 @@ public class User implements Serializable {
     private Integer userId;
 
     @ApiModelProperty(value = "用户名称")
-    private String userName;
+    private String username;
 
     @ApiModelProperty(value = "用户密码")
-    private String userPassword;
+    private String password;
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
+    @ApiModelProperty(value = "用户签名")
+    private String token;
 
 }

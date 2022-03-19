@@ -1,4 +1,4 @@
-package com.baomidou.backstage.controller;
+package sc.ete.backstage.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

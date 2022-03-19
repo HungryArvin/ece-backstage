@@ -1,6 +1,6 @@
-package com.baomidou.backstage.mapper;
+package sc.ete.backstage.mapper;
 
-import com.baomidou.backstage.entity.User;
+import sc.ete.backstage.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

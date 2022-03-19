@@ -1,8 +1,8 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.Question;
-import com.baomidou.backstage.mapper.QuestionMapper;
-import com.baomidou.backstage.service.QuestionService;
+import sc.ete.backstage.entity.Question;
+import sc.ete.backstage.mapper.QuestionMapper;
+import sc.ete.backstage.service.QuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.StudentInfo;
-import com.baomidou.backstage.mapper.StudentInfoMapper;
-import com.baomidou.backstage.service.StudentInfoService;
+import sc.ete.backstage.entity.StudentInfo;
+import sc.ete.backstage.mapper.StudentInfoMapper;
+import sc.ete.backstage.service.StudentInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

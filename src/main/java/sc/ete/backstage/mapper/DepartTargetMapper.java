@@ -1,6 +1,6 @@
-package com.baomidou.backstage.mapper;
+package sc.ete.backstage.mapper;
 
-import com.baomidou.backstage.entity.DepartTarget;
+import sc.ete.backstage.entity.DepartTarget;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

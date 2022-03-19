@@ -1,8 +1,8 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.Role;
-import com.baomidou.backstage.mapper.RoleMapper;
-import com.baomidou.backstage.service.RoleService;
+import sc.ete.backstage.entity.Role;
+import sc.ete.backstage.mapper.RoleMapper;
+import sc.ete.backstage.service.RoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

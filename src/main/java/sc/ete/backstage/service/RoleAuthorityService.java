@@ -1,6 +1,6 @@
-package com.baomidou.backstage.service;
+package sc.ete.backstage.service;
 
-import com.baomidou.backstage.entity.RoleAuthority;
+import sc.ete.backstage.entity.RoleAuthority;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

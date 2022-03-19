@@ -1,10 +1,10 @@
-package com.baomidou.backstage.service.impl;
+package sc.ete.backstage.service.impl;
 
-import com.baomidou.backstage.entity.Authority;
-import com.baomidou.backstage.mapper.AuthorityMapper;
-import com.baomidou.backstage.service.AuthorityService;
+import sc.ete.backstage.entity.Authority;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import sc.ete.backstage.mapper.AuthorityMapper;
+import sc.ete.backstage.service.AuthorityService;
 
 /**
  * <p>

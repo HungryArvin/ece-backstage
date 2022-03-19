@@ -1,7 +1,8 @@
-package com.baomidou.backstage.mapper;
+package sc.ete.backstage.mapper;
 
-import com.baomidou.backstage.entity.Authority;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import sc.ete.backstage.entity.Authority;
 
 /**
  * <p>
