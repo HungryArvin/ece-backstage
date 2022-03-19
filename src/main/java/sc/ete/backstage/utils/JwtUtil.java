@@ -102,4 +102,22 @@ public class JwtUtil {
 
         return (String)claims.get("id"); //返回用户id
     }
+
+    /**
+     * 根据token获取username
+     * @return
+     */
+    public static String getUsernameFromToken(String token) {
+        if(StringUtils.isEmpty(token)) return "";
+
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token);
+
+        Claims claims = claimsJws.getBody();
+
+        return (String)claims.get("username"); //返回用户id
+    }
+
+    public static void removeToken(String token){
+
+    }
 }
