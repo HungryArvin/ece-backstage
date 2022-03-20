@@ -14,6 +14,7 @@ import sc.ete.backstage.service.StudentInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import sc.ete.backstage.service.UserService;
+import sc.ete.backstage.utils.MD5;
 
 /**
  * <p>
@@ -40,9 +41,17 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         //创建user
         final User user = new User();
         user.setUsername(studentInfo.getStudentNum());
-        user.setPassword(studentInfo.getStudentNum());
-        userService.save(user);
-        studentInfo.setUserId(user.getUserId());
+        //密码需要md5加密
+        user.setPassword(MD5.encrypt(studentInfo.getStudentNum()));
+        //查询或创建user
+        final QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("username",user.getUsername());
+        User userInfo = userService.getOne(userQueryWrapper);
+        if (userInfo == null) {
+            userService.save(user);
+            userInfo = user;
+        }
+        studentInfo.setUserId(userInfo.getUserId());
 
         //查询或创建classInfo
         final ClassInfo classInfo = new ClassInfo();
@@ -61,6 +70,12 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         studentInfo.setClassId(classInformation.getId()+"");
 
         //保存学生信息
-        studentInfoMapper.insert(studentInfo);
+        //保存前查询 避免重复
+        final QueryWrapper<StudentInfo> studentInfoQueryWrapper = new QueryWrapper<>();
+        studentInfoQueryWrapper.eq("student_num",studentInfo.getStudentNum());
+        final Integer count = studentInfoMapper.selectCount(studentInfoQueryWrapper);
+        if(count < 1) {
+            studentInfoMapper.insert(studentInfo);
+        }
     }
 }
