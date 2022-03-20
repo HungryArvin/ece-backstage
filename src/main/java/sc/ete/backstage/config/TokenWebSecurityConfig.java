@@ -55,6 +55,8 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addLogoutHandler(new TokenLogoutHandler(redisTemplate)).and()
                 .addFilter(new TokenLoginFilter(authenticationManager(), redisTemplate))
                 .addFilter(new TokenAuthenticationFilter(authenticationManager(), redisTemplate)).httpBasic();
+        //打开跨域支持策略
+        http.cors();
     }
 
     /**
