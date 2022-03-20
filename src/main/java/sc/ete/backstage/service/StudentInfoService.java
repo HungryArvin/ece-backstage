@@ -2,6 +2,7 @@ package sc.ete.backstage.service;
 
 import sc.ete.backstage.entity.StudentInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import sc.ete.backstage.entity.VO.StudentInfoVO;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface StudentInfoService extends IService<StudentInfo> {
 
+    void addStudentInfo(StudentInfoVO studentInfoVO);
 }
