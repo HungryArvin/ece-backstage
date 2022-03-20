@@ -40,10 +40,10 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         logger.info("================="+req.getRequestURI());
-//        if(req.getRequestURI().indexOf("admin") == -1) {
-//            chain.doFilter(req, res);
-//            return;
-//        }
+        if(req.getRequestURI().indexOf("backstage") != -1) {
+            chain.doFilter(req, res);
+            return;
+        }
 
         UsernamePasswordAuthenticationToken authentication = null;
         try {

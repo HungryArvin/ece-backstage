@@ -36,6 +36,14 @@ public class R {
             r.setMessage("调用成功");
             return r;
         }
+    //创建成功无返回结果
+    public static R created(){
+        R r = new R();
+        r.setSuccess(true);
+        r.setCode(ResultCode.CREATED.CODE);
+        r.setMessage("创建成功");
+        return r;
+    }
         //失败方法
         public static R error(){
             R r = new R();
