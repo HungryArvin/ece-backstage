@@ -48,6 +48,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
         UsernamePasswordAuthenticationToken authentication = null;
         try {
             authentication = getAuthentication(req);
+
         } catch (Exception e) {
             ResponseUtil.out(res, R.error());
         }
@@ -68,6 +69,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
             List<String> permissionValueList = (List<String>) redisTemplate.opsForValue().get(userName);
             Collection<GrantedAuthority> authorities = new ArrayList<>();
+            assert permissionValueList != null;
             for(String permissionValue : permissionValueList) {
                 if(StringUtils.isEmpty(permissionValue)) continue;
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(permissionValue);

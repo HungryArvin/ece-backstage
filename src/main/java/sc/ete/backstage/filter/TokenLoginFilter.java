@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -67,7 +68,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         //设置token
         String token = JwtUtil.getJwtToken(user.getCurrentUserInfo().getUserId()+"",user.getCurrentUserInfo().getUsername());
         redisTemplate.opsForValue().set(user.getCurrentUserInfo().getUsername(), user.getPermissionValueList());
-
+        redisTemplate.expire(user.getCurrentUserInfo().getUsername(),60*60*12, TimeUnit.SECONDS);
         ResponseUtil.out(res, R.right().data("X-Token", token));
     }
 
@@ -82,6 +83,6 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException e) throws IOException, ServletException {
-        ResponseUtil.out(response, R.error());
+        ResponseUtil.out(response, R.error().message("用户名或密码错误"));
     }
 }
