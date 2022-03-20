@@ -1,11 +1,15 @@
 package sc.ete.backstage.entity.VO;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * @author ：Arvin
@@ -34,4 +38,7 @@ public class StudentInfoResponseVO {
 
     @ApiModelProperty(value = "入学年份")
     private String level;
+
+    @ApiModelProperty(value = "更新时间")
+    private Date updateTime;
 }
