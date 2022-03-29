@@ -40,5 +40,5 @@ public class StudentInfoResponseVO {
     private String level;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private String updateTime;
 }
