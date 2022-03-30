@@ -44,10 +44,10 @@ public class CourseDetails implements Serializable {
     private Integer courseGradePoint;
 
     @ApiModelProperty(value = "课程开始时间")
-    private Date startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "课程结束时间")
-    private Date endTime;
+    private String endTime;
 
     @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)

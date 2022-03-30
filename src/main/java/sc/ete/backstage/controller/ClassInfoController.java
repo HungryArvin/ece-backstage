@@ -5,8 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import sc.ete.backstage.entity.ClassInfo;
+import sc.ete.backstage.entity.VO.ClassInfoListVO;
 import sc.ete.backstage.service.ClassInfoService;
 import sc.ete.backstage.utils.R;
+
+import java.util.List;
 
 
 /**
@@ -60,5 +63,10 @@ public class ClassInfoController {
         return R.right();
     }
 
+    @GetMapping("/getList")
+    public R getClassAndLevelList(){
+        final List<ClassInfo> list = classInfoService.list();
+        return R.right().data("list",list);
+    }
 }
 
