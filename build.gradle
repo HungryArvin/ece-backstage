@@ -49,6 +49,9 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     //excel操作
     implementation 'com.alibaba:easyexcel:2.1.1'
+    //aliyun oss
+    implementation 'com.aliyun:aliyun-sdk-vod-upload:1.4.13'
+    implementation 'com.aliyun.oss:aliyun-sdk-oss:3.10.1'
 
 
 }
