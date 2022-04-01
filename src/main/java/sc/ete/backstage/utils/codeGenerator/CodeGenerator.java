@@ -50,7 +50,7 @@ public class CodeGenerator {
         PackageConfig pc = new PackageConfig();
         System.out.println("输入模块名称：");
         pc.setModuleName("backstage");
-//        pc.setParent("sc.ete");
+        pc.setParent("sc.ete");
         pc.setController("controller");
         pc.setEntity("entity");
         pc.setMapper("mapper");
