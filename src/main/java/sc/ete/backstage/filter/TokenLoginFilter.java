@@ -69,7 +69,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = JwtUtil.getJwtToken(user.getCurrentUserInfo().getUserId()+"",user.getCurrentUserInfo().getUsername());
         redisTemplate.opsForValue().set(user.getCurrentUserInfo().getUsername(), user.getPermissionValueList());
         redisTemplate.expire(user.getCurrentUserInfo().getUsername(),60*60*12, TimeUnit.SECONDS);
-        ResponseUtil.out(res, R.right().data("X-Token", token));
+        ResponseUtil.out(res, R.right().data("token", token));
     }
 
     /**

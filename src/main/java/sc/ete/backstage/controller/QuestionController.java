@@ -15,8 +15,10 @@ import sc.ete.backstage.entity.VO.QuestionRequestVO;
 import sc.ete.backstage.service.DepartTargetService;
 import sc.ete.backstage.service.QuestionManageService;
 import sc.ete.backstage.service.QuestionService;
+import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -63,6 +65,28 @@ public class QuestionController {
             return  R.right();
         }
         return R.error();
+    }
+
+    @PostMapping("/create")
+    public R saveQuestion(@RequestBody QuestionRequestVO questionRequestVO, HttpServletRequest request) {
+        //创建问题
+        //拿出question
+        final List<QuestionRequestVO> domains = questionRequestVO.getDomains();
+        domains.add(questionRequestVO);
+        final Question question = new Question();
+        domains.forEach(q -> {
+            question.setQuestion(q.getName());
+            question.setType(3);
+            questionService.save(question);
+            //创建老师与个人问卷的练习
+            final String memberIdByJwtToken = JwtUtil.getMemberIdByJwtToken(request);
+            final DepartTarget departTarget = new DepartTarget();
+            departTarget.setDepId(Integer.parseInt(memberIdByJwtToken));
+            departTarget.setTargetId(question.getId()+"");
+            departTargetService.save(departTarget);
+        });
+        return R.right();
+
     }
 }
 

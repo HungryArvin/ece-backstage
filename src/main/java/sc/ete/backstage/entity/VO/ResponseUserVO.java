@@ -26,6 +26,9 @@ public class ResponseUserVO {
     @ApiModelProperty(value = "用户简介")
     private String introduction;
 
+    //如果角色是老师的话 插入侧屏得分
+    private Integer value;
+
     @ApiModelProperty(value = "角色")
     private List<String> roles;
 

@@ -10,15 +10,18 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import sc.ete.backstage.entity.*;
 import sc.ete.backstage.entity.VO.TeacherQueryVO;
 import sc.ete.backstage.entity.VO.TeacherRequestVO;
 import sc.ete.backstage.entity.VO.TeacherResponseVO;
 import sc.ete.backstage.entity.VO.TeacherUpdateVO;
 import sc.ete.backstage.service.*;
+import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.MD5;
 import sc.ete.backstage.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -176,6 +179,41 @@ public class TeacherInfoController {
             return R.right();
         }
         return R.error();
+    }
+
+    @GetMapping("/getByToken")
+    public R getTeacherInfoByToken(HttpServletRequest request){
+        // token置于header里
+        String token = request.getHeader("X-Token");
+        //解析token获取id
+        String usernameFromToken = JwtUtil.getUsernameFromToken(token);
+        if (usernameFromToken.isEmpty()) {
+            usernameFromToken = "1111";
+        }
+        final QueryWrapper<TeacherInfo> teacherInfoQueryWrapper = new QueryWrapper<>();
+        teacherInfoQueryWrapper.eq("teacher_num",usernameFromToken);
+        final TeacherInfo teacherInfo = teacherInfoService.getOne(teacherInfoQueryWrapper);
+        if (teacherInfo == null) {
+            return R.error().message("该用户信息有误");
+        }
+        //查class
+        final QueryWrapper<ClassTarget> classTargetQueryWrapper = new QueryWrapper<>();
+        classTargetQueryWrapper.eq("target_id",teacherInfo.getTeacherId());
+        final List<ClassTarget> classTargetList = classTargetService.list(classTargetQueryWrapper);
+        final List<Integer> classIds = classTargetList.stream().map(ClassTarget::getClassId).collect(Collectors.toList());
+
+        //查course
+        final QueryWrapper<CourseTeacher> courseTeacherQueryWrapper = new QueryWrapper<>();
+        courseTeacherQueryWrapper.eq("teacher_id",teacherInfo.getTeacherId());
+        final List<CourseTeacher> courseTeachers = courseTeacherService.list(courseTeacherQueryWrapper);
+        final List<Integer> courseIds = courseTeachers.stream().map(CourseTeacher::getCourseId).collect(Collectors.toList());
+        //响应结果封装
+        final TeacherRequestVO teacherRequestVO = new TeacherRequestVO();
+        BeanUtils.copyProperties(teacherInfo,teacherRequestVO);
+        teacherRequestVO.setClassList(classIds);
+        teacherRequestVO.setCourseList(courseIds);
+        teacherRequestVO.setBirthday(teacherInfo.getBirthday().toString());
+        return R.right().data("data",teacherRequestVO);
     }
 }
 
