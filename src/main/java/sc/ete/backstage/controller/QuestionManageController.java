@@ -1,21 +1,17 @@
 package sc.ete.backstage.controller;
 
 
+import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import sc.ete.backstage.entity.DepartTarget;
-import sc.ete.backstage.entity.Question;
-import sc.ete.backstage.entity.QuestionManage;
-import sc.ete.backstage.entity.QuestionManageTarget;
+import sc.ete.backstage.entity.*;
 import sc.ete.backstage.entity.VO.QuestionManageVO;
-import sc.ete.backstage.service.DepartTargetService;
-import sc.ete.backstage.service.QuestionManageService;
-import sc.ete.backstage.service.QuestionManageTargetService;
-import sc.ete.backstage.service.QuestionService;
+import sc.ete.backstage.entity.VO.QuestionsSubmitVO;
+import sc.ete.backstage.service.*;
 import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.R;
 
@@ -43,6 +39,8 @@ public class QuestionManageController {
     private DepartTargetService departTargetService;
     @Autowired
     private QuestionManageTargetService questionManageTargetService;
+    @Autowired
+    private QuestionAnswerService questionAnswerService;
 
     @PutMapping("/updateStatus/{id}")
     public R updateStatus(@PathVariable(name = "id")Integer id) {
@@ -104,10 +102,14 @@ public class QuestionManageController {
         final QueryWrapper<QuestionManageTarget> questionManageTargetQueryWrapper = new QueryWrapper<>();
         questionManageTargetQueryWrapper.eq("target_id",userID);
         final List<QuestionManageTarget> questionManageTargets = questionManageTargetService.list(questionManageTargetQueryWrapper);
-        final Stream<Integer> manageIds = questionManageTargets.stream().map(QuestionManageTarget::getManageId);
+        final List<Integer> manageIds = questionManageTargets.stream().map(QuestionManageTarget::getManageId).collect(Collectors.toList());
         //查询未完成的问卷
         final QueryWrapper<QuestionManage> questionManageQueryWrapper = new QueryWrapper<>();
-        questionManageQueryWrapper.notIn("id",manageIds);
+        //过滤未开启的问卷
+        questionManageQueryWrapper.eq("status",1);
+        if (!manageIds.isEmpty()) {
+            questionManageQueryWrapper.notIn("id",manageIds);
+        }
         final Page<QuestionManage> questionManagePage = new Page<>(page, size);
 
         final Page<QuestionManage> result = questionManageService.page(questionManagePage,questionManageQueryWrapper);
@@ -120,6 +122,28 @@ public class QuestionManageController {
         }).collect(Collectors.toList());
         return R.right().data("total",result.getTotal()).data("currentPage",result.getCurrent())
                 .data("pages",result.getPages()).data("size",result.getSize()).data("list",list);
+    }
+
+    @PostMapping("/submitQuestions")
+    public R studentSubmitQuestions(@RequestBody QuestionsSubmitVO questionsSubmitVO,
+                                    HttpServletRequest request){
+        //获取用户ID
+        final String userID = JwtUtil.getMemberIdByJwtToken(request);
+        //存储所有问题答案
+        final List<Question> questionList = questionsSubmitVO.getQuestionList();
+        questionList.forEach(question -> {
+            final QuestionAnswer questionAnswer = new QuestionAnswer();
+            questionAnswer.setQuestionId(question.getId());
+            questionAnswer.setUserId(Integer.parseInt(userID));
+            questionAnswer.setAnswer(question.getAnswer());
+            questionAnswerService.save(questionAnswer);
+        });
+        //存储问卷
+        final QuestionManageTarget questionManageTarget = new QuestionManageTarget();
+        questionManageTarget.setManageId(Integer.parseInt(questionsSubmitVO.getManageId()));
+        questionManageTarget.setTargetId(Integer.parseInt(userID));
+        questionManageTargetService.save(questionManageTarget);
+        return R.right();
     }
 }
 
