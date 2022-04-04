@@ -4,16 +4,11 @@ package sc.ete.backstage.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
-import sc.ete.backstage.entity.Role;
-import sc.ete.backstage.entity.StudentInfo;
-import sc.ete.backstage.entity.TeacherInfo;
-import sc.ete.backstage.entity.User;
+import sc.ete.backstage.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import sc.ete.backstage.entity.VO.ResponseUserVO;
-import sc.ete.backstage.service.StudentInfoService;
-import sc.ete.backstage.service.TeacherInfoService;
-import sc.ete.backstage.service.UserService;
+import sc.ete.backstage.service.*;
 import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.MD5;
 import sc.ete.backstage.utils.R;
@@ -21,6 +16,8 @@ import sc.ete.backstage.utils.R;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -39,13 +36,29 @@ public class UserController {
     private StudentInfoService studentInfoService;
     @Autowired
     private TeacherInfoService teacherInfoService;
+    @Autowired
+    private UserRoleService userRoleService;
+    @Autowired
+    private RoleService roleService;
 
     @PostMapping("/add")
     public R userAdd(@RequestBody User user){
         if (StrUtil.isNotEmpty(user.getUsername()) && StrUtil.isNotEmpty(user.getPassword())) {
+            //用户名不存在
+            final QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+            userQueryWrapper.eq("username",user.getUsername());
+            final int count = userService.count(userQueryWrapper);
+            if (count > 0) {
+                return R.error().message("用户名已存在");
+            }
             //密码md5加密
             user.setPassword(MD5.encrypt(user.getPassword()));
             final boolean save = userService.save(user);
+            //赋予超管权限
+            final UserRole userRole = new UserRole();
+            userRole.setRoleId(1);
+            userRole.setUserId(user.getUserId());
+            userRoleService.save(userRole);
         }
         return R.right().data("user",user);
     }
@@ -83,12 +96,17 @@ public class UserController {
             responseUserVO.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
             responseUserVO.setIntroduction("超管后台");
         }
-
-        final List<String> roles = new ArrayList();
-        final Role role = new Role();
-        role.setRoleName("admin");
-        roles.add("admin");
-        responseUserVO.setRoles(roles);
+        //查询用户角色名称
+        final QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+        userRoleQueryWrapper.eq("user_id",userID);
+        final List<UserRole> userRoles = userRoleService.list(userRoleQueryWrapper);
+        final List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        if (roleIds.isEmpty()) {
+            return R.error();
+        }
+        final List<Role> roles = roleService.listByIds(roleIds);
+        final List<String> roleNames = roles.stream().map(Role::getRoleName).collect(Collectors.toList());
+        responseUserVO.setRoles(roleNames);
         return R.right().data("user",responseUserVO);
     }
 

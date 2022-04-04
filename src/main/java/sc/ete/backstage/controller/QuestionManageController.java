@@ -1,6 +1,7 @@
 package sc.ete.backstage.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -83,8 +84,8 @@ public class QuestionManageController {
         final List<DepartTarget> departTargetList = departTargetService.list(departTargetQueryWrapper);
         final List<String> questionIds = departTargetList.stream().map(DepartTarget::getTargetId).collect(Collectors.toList());
         final List<Question> questionList = questionService.listByIds(questionIds);
-
-        return R.right().data("list",questionList).data("name",questionManage.getName());
+        final List<Question> result = questionList.stream().filter(question -> question.getType() != 3).collect(Collectors.toList());
+        return R.right().data("list",result).data("name",questionManage.getName());
     }
     /**
      * create by: Arvin
@@ -139,10 +140,12 @@ public class QuestionManageController {
             questionAnswerService.save(questionAnswer);
         });
         //存储问卷
-        final QuestionManageTarget questionManageTarget = new QuestionManageTarget();
-        questionManageTarget.setManageId(Integer.parseInt(questionsSubmitVO.getManageId()));
-        questionManageTarget.setTargetId(Integer.parseInt(userID));
-        questionManageTargetService.save(questionManageTarget);
+        if (StrUtil.isNotEmpty(questionsSubmitVO.getManageId())) {
+            final QuestionManageTarget questionManageTarget = new QuestionManageTarget();
+            questionManageTarget.setManageId(Integer.parseInt(questionsSubmitVO.getManageId()));
+            questionManageTarget.setTargetId(Integer.parseInt(userID));
+            questionManageTargetService.save(questionManageTarget);
+        }
         return R.right();
     }
 }

@@ -50,6 +50,8 @@ public class TeacherInfoController {
     private ClassInfoService classInfoService;
     @Autowired
     private CourseDetailsService courseDetailsService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     @PostMapping("/save")
     public R saveTeacherInfo(@RequestBody TeacherRequestVO teacherRequestVO){
@@ -65,6 +67,11 @@ public class TeacherInfoController {
         user.setUsername(teacherInfo.getTeacherNum());
         user.setPassword(MD5.encrypt(teacherInfo.getTeacherNum()));
         userService.save(user);
+        //为用户赋权
+        final UserRole userRole = new UserRole();
+        userRole.setUserId(user.getUserId());
+        userRole.setRoleId(3);
+        userRoleService.save(userRole);
         //根据老师ID绑定班级+课程
         final ClassTarget classTarget = new ClassTarget();
         classTarget.setTargetId(teacherInfo.getTeacherId());
@@ -155,13 +162,13 @@ public class TeacherInfoController {
         classTarget.setTargetId(teacherInfo.getTeacherId());
         teacherRequestVO.getClassList().forEach(id -> {
             classTarget.setClassId(id);
-            classTargetService.saveOrUpdate(classTarget);
+            classTargetService.save(classTarget);
         });
         final CourseTeacher courseTeacher = new CourseTeacher();
         courseTeacher.setTeacherId(teacherInfo.getTeacherId());
         teacherRequestVO.getCourseList().forEach(id -> {
             courseTeacher.setCourseId(id);
-            courseTeacherService.saveOrUpdate(courseTeacher);
+            courseTeacherService.save(courseTeacher);
         });
         return R.right();
     }

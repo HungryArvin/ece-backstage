@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sc.ete.backstage.entity.ClassInfo;
 import sc.ete.backstage.entity.StudentInfo;
 import sc.ete.backstage.entity.User;
+import sc.ete.backstage.entity.UserRole;
 import sc.ete.backstage.entity.VO.StudentInfoVO;
 import sc.ete.backstage.mapper.StudentInfoMapper;
 import sc.ete.backstage.service.ClassInfoService;
 import sc.ete.backstage.service.StudentInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import sc.ete.backstage.service.UserRoleService;
 import sc.ete.backstage.service.UserService;
 import sc.ete.backstage.utils.MD5;
 
@@ -32,6 +34,8 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
     private ClassInfoService classInfoService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Override
     public void addStudentInfo(StudentInfoVO studentInfoVO) {
@@ -77,5 +81,10 @@ public class StudentInfoServiceImpl extends ServiceImpl<StudentInfoMapper, Stude
         if(count < 1) {
             studentInfoMapper.insert(studentInfo);
         }
+        //给学生设置默认权限
+        final UserRole userRole = new UserRole();
+        userRole.setRoleId(2);
+        userRole.setUserId(user.getUserId());
+        userRoleService.save(userRole);
     }
 }

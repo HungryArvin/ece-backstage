@@ -12,21 +12,25 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
 import sc.ete.backstage.entity.ClassInfo;
+import sc.ete.backstage.entity.ClassTarget;
 import sc.ete.backstage.entity.StudentInfo;
+import sc.ete.backstage.entity.TeacherInfo;
 import sc.ete.backstage.entity.VO.ClassInfoListVO;
 import sc.ete.backstage.entity.VO.StudentInfoResponseVO;
 import sc.ete.backstage.entity.VO.StudentInfoVO;
 import sc.ete.backstage.exception.MyException;
 import sc.ete.backstage.handler.StudentExcelHandler;
-import sc.ete.backstage.service.ClassInfoService;
-import sc.ete.backstage.service.StudentInfoService;
-import sc.ete.backstage.service.UserService;
+import sc.ete.backstage.service.*;
+import sc.ete.backstage.utils.JwtUtil;
 import sc.ete.backstage.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -45,6 +49,10 @@ public class StudentInfoController {
     private UserService userService;
     @Autowired
     private ClassInfoService classInfoService;
+    @Autowired
+    private ClassTargetService classTargetService;
+    @Autowired
+    private TeacherInfoService teacherInfoService;
 
     @PostMapping("/upload")
     public R uploadStudentInfoExcel(@RequestParam(value = "studentExcel")MultipartFile multipartFile) {
@@ -108,15 +116,40 @@ public class StudentInfoController {
     }
 
     @GetMapping("/getByQuery/{page}/{size}")
-    public R getAllStudentInfo(@PathVariable(name = "page")Integer page,@PathVariable(name = "size")Integer size,
+    public R getAllStudentInfo(@PathVariable(name = "page")Integer page, @PathVariable(name = "size")Integer size,
                                @RequestParam(name = "studentName", required = false)String studentName,
                                @RequestParam(name = "studentNum", required = false)String studentNum,
                                @RequestParam(name = "level", required = false)String level,
-                               @RequestParam(name = "className", required = false)String className){
+                               @RequestParam(name = "className", required = false)String className,
+                               @RequestParam(name = "role",required = false)String role,
+                               @RequestParam(name = "teacherId",required = false)String teacherId,
+                               HttpServletRequest request){
         final Page<StudentInfo> studentInfoPage = new Page<>(page,size);
         //条件添加
         final QueryWrapper<StudentInfo> studentInfoQueryWrapper = new QueryWrapper<>();
-        List<Integer> classIds = null;
+        List<Integer> classIds = new ArrayList<>();
+        //判断是否是老师端查询
+        if ("teacher".equals(role)) {
+            //查询当前老师所代有的班级
+            final String teacherNum = JwtUtil.getUsernameFromToken(request.getHeader("X-Token"));
+            final QueryWrapper<TeacherInfo> teacherInfoQueryWrapper = new QueryWrapper<>();
+            teacherInfoQueryWrapper.eq("teacher_num",teacherNum);
+            final TeacherInfo teacherInfo = teacherInfoService.getOne(teacherInfoQueryWrapper);
+            final QueryWrapper<ClassTarget> classTargetQueryWrapper = new QueryWrapper<>();
+            classTargetQueryWrapper.eq("target_id",teacherInfo.getTeacherId());
+            final List<ClassTarget> classTargets = classTargetService.list(classTargetQueryWrapper);
+            final List<Integer> ids = classTargets.stream().map(ClassTarget::getClassId).collect(Collectors.toList());
+            classIds = ids;
+        }
+        //判断是否是超管查询
+        if("admin".equals(role) && StrUtil.isNotEmpty(teacherId)) {
+            final QueryWrapper<ClassTarget> classTargetQueryWrapper = new QueryWrapper<>();
+            classTargetQueryWrapper.eq("target_id",teacherId);
+            final List<ClassTarget> classTargets = classTargetService.list(classTargetQueryWrapper);
+            final List<Integer> ids = classTargets.stream().map(ClassTarget::getClassId).collect(Collectors.toList());
+            classIds = ids;
+        }
+
         if (StrUtil.isNotEmpty(className)) {
             final QueryWrapper<ClassInfo> classInfoQueryWrapper = new QueryWrapper<>();
             classInfoQueryWrapper.eq("class_name",className);
@@ -125,7 +158,8 @@ public class StudentInfoController {
                 classInfoQueryWrapper.eq("level",level);
             }
             final List<ClassInfo> classInfos = classInfoService.list(classInfoQueryWrapper);
-            classIds = classInfos.stream().map(ClassInfo::getId).collect(Collectors.toList());
+            final List<Integer> classId= classInfos.stream().map(ClassInfo::getId).collect(Collectors.toList());
+            classIds.addAll(classId);
         }
         if (StrUtil.isNotEmpty(studentName)) {
             studentInfoQueryWrapper.like("student_name",studentName);
