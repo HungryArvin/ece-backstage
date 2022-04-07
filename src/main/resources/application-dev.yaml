@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: ece_base
     password: 123456
-    url: jdbc:mysql://8.142.101.41:3306/ece_base?useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/ece_base?useSSL=false&serverTimezone=GMT%2B8
     #    druid 线程池配置
     type: com.alibaba.druid.pool.DruidDataSource
     #druid 线程池监控配置
@@ -89,8 +89,8 @@ mybatis-plus:
 aliyun:
   oss:
     file:
-      endpoint: oss-cn-beijing.aliyuncs.com
-      keyid: LTAI5t91FSHzucn53TXKd1q5
-      keysecret: 9eQUUdHUXOWR32uQwrgmPXywSOa9q1
+      endpoint: XXXXXX
+      keyid: XXXXXX
+      keysecret: XXXXXX
       #bucket可以在控制台创建，也可以使用java代码创建
-      bucketname: arvin-bucket
+      bucketname: XXXXXX
