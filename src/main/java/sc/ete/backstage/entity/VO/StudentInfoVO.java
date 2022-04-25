@@ -35,4 +35,20 @@ public class StudentInfoVO {
     @ApiModelProperty(value = "入学年份")
     @ExcelProperty("入学年份")
     private String level;
+
+    @ApiModelProperty(value = "期末成绩")
+    @ExcelProperty("期末成绩")
+    private int score;
+
+    @ApiModelProperty(value = "平时成绩")
+    @ExcelProperty("平时成绩")
+    private int qualityScore;
+
+    @ApiModelProperty(value = "四级成绩")
+    @ExcelProperty("四级成绩")
+    private int cetFour;
+
+    @ApiModelProperty(value = "六级成绩")
+    @ExcelProperty("六级成绩")
+    private int cetSix;
 }

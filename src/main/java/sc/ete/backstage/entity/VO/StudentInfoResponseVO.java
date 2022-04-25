@@ -39,6 +39,18 @@ public class StudentInfoResponseVO {
     @ApiModelProperty(value = "入学年份")
     private String level;
 
+    @ApiModelProperty(value = "期末成绩")
+    private int score;
+
+    @ApiModelProperty(value = "平时成绩")
+    private int qualityScore;
+
+    @ApiModelProperty(value = "四级成绩")
+    private int cetFour;
+
+    @ApiModelProperty(value = "六级成绩")
+    private int cetSix;
+
     @ApiModelProperty(value = "更新时间")
     private String updateTime;
 }

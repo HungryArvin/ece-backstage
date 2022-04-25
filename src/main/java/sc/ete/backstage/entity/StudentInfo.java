@@ -46,6 +46,18 @@ public class StudentInfo implements Serializable {
     @ApiModelProperty(value = "所在班级")
     private String classId;
 
+    @ApiModelProperty(value = "期末成绩")
+    private int score;
+
+    @ApiModelProperty(value = "平时成绩")
+    private int qualityScore;
+
+    @ApiModelProperty(value = "四级成绩")
+    private int cetFour;
+
+    @ApiModelProperty(value = "六级成绩")
+    private int cetSix;
+
     @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
